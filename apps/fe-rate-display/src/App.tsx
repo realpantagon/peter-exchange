@@ -70,7 +70,7 @@ export default function Page() {
     <div className="h-screen w-screen bg-gray-50 flex flex-col">
       <div className="bg-white border-b border-gray-200 px-2 sm:px-6 pt-1 sm:pt-2 flex-shrink-0 flex items-center justify-between">
         <img
-          src="/bdge_png.png"
+          src="/Ex_logo_6.png"
           alt="Peter Exchange Logo"
           className="h-10 sm:h-14 md:h-20"
         />
