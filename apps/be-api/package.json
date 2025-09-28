@@ -1,0 +1,23 @@
+{
+  "name": "be-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.17.1",
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20250927.0",
+    "@supabase/supabase-js": "^2.58.0",
+    "hono": "^4.9.9"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.2"
+  }
+}
