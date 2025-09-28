@@ -29,7 +29,7 @@ function App() {
   }
 
   const getFlagIcon = (currencyCode: string) => {
-    const baseUrl = 'http://localhost:5173' // fe-rate-display URL
+    const baseUrl = 'https://peter-exchange.pages.dev' // fe-rate-display URL
     const flagMap: { [key: string]: string } = {
       AUD: `${baseUrl}/AUD.png`,
       CAD: `${baseUrl}/CAD.png`,
