@@ -29,4 +29,41 @@ app.get('/public/rates', async (c) => {
   return c.json(data)
 })
 
+// PUT /public/rates/:id - Edit exchange rate
+app.put('/public/rates/:id', async (c) => {
+  const client = getSupabase(c)
+  const id = c.req.param('id')
+  
+  try {
+    const body = await c.req.json()
+    const { Rate } = body
+
+    // Validate required field
+    if (Rate === undefined) {
+      return c.json({ error: 'Rate is required' }, 400)
+    }
+
+    // Validate Rate is a number
+    if (typeof Rate !== 'number' || Rate <= 0) {
+      return c.json({ error: 'Rate must be a positive number' }, 400)
+    }
+
+    const { data, error } = await client
+      .from('Peter_Exchange_Rate')
+      .update({ Rate })
+      .eq('id', id)
+      .select()
+
+    if (error) return c.json({ error: error.message }, 500)
+
+    if (!data || data.length === 0) {
+      return c.json({ error: 'Rate not found' }, 404)
+    }
+
+    return c.json({ message: 'Rate updated successfully', data: data[0] })
+  } catch (error) {
+    return c.json({ error: 'Invalid JSON body' }, 400)
+  }
+})
+
 export default app;
