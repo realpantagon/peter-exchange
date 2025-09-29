@@ -1,0 +1,16 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "peter-exchange",
+    "main": "src-worker/index.ts",
+    "compatibility_date": "2025-08-21",
+    "assets": {
+        "not_found_handling": "single-page-application",
+        "directory": "dist"
+    },
+    "observability": {
+        "enabled": true
+    },
+    "compatibility_flags": [
+        "nodejs_compat"
+    ]
+}

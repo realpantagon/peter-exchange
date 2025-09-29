@@ -33,7 +33,7 @@ export default function RateDisplay() {
       setNow(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }));
     };
     updateTime();
-    const timer = setInterval(updateTime, 1000);
+  const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
 
