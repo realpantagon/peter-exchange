@@ -1,6 +1,6 @@
-"use client"
-
 import { useEffect, useState } from "react"
+import { hc } from 'hono/client'
+import type { AppType } from '../../src-worker/index'
 
 type Rate = {
   id: number
@@ -8,6 +8,8 @@ type Rate = {
   Cur: string
   Rate: number
 }
+
+const client = hc<AppType>('/')
 
 export default function RateDisplay() {
   const [rates, setRates] = useState<Rate[]>([])
@@ -19,6 +21,21 @@ export default function RateDisplay() {
     yellow: 'bg-yellow-200',
     orange: 'bg-orange-200'
   };
+
+  const fetchRates = async () => {
+    try {
+      const response = await client.public.rates.$get()
+
+      const data = await response.json()
+      if ("error" in data) {
+        console.error('Error fetching rates:', data.error)
+        return
+      }
+      setRates(data)
+    } catch (error) {
+      console.error('Failed to fetch rates:', error)
+    }
+  }
 
   const cycleTheme = () => {
     const themes: ('blue' | 'yellow' | 'orange')[] = ['blue', 'yellow', 'orange'];
@@ -33,15 +50,12 @@ export default function RateDisplay() {
       setNow(d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }));
     };
     updateTime();
-  const timer = setInterval(updateTime, 1000);
+    const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    fetch(apiUrl)
-      .then((res) => res.json())
-      .then((data) => setRates(data))
+    fetchRates()
   }, [])
 
   const getFlagIcon = (currencyCode: string) => {
