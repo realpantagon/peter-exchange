@@ -29,6 +29,21 @@ app.get('/public/rates', async (c) => {
   return c.json(data)
 })
 
+// GET /public/rates
+app.get('/public/rates/:id', async (c) => {
+  const client = getSupabase(c)
+  const id = c.req.param('id')
+
+  const { data, error } = await client
+    .from('Peter_Exchange_Rate')
+    .select('id, Currency, Cur, Rate')
+    .eq('id', id)
+
+  if (error) return c.json({ error: error.message }, 500)
+
+  return c.json(data)
+})
+
 // PUT /public/rates/:id - Edit exchange rate
 app.put('/public/rates/:id', async (c) => {
   const client = getSupabase(c)
