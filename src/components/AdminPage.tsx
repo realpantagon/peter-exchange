@@ -3,181 +3,181 @@ import { hc } from 'hono/client'
 import type { AppType } from '../../src-worker/index'
 
 type Rate = {
-    id: number
-    Currency: string
-    Cur: string
-    Rate: number
+  id: number
+  Currency: string
+  Cur: string
+  Rate: string
 }
 
 const client = hc<AppType>('/')
 
 export default function AdminPage() {
-    const [rates, setRates] = useState<Rate[]>([])
-    const [editingId, setEditingId] = useState<number | null>(null)
-    const [editValue, setEditValue] = useState<string>('')
-    const [loading, setLoading] = useState(false)
+  const [rates, setRates] = useState<Rate[]>([])
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editValue, setEditValue] = useState<string>('')
+  const [loading, setLoading] = useState(false)
 
-    useEffect(() => {
-        fetchRates()
-    }, [])
+  useEffect(() => {
+    fetchRates()
+  }, [])
 
-    const fetchRates = async () => {
-        try {
-            const response = await client.public.rates.$get()
-
-            const data = await response.json()
-            if ("error" in data) {
-                console.error('Error fetching rates:', data.error)
-                return
-            }
-            setRates(data)
-        } catch (error) {
-            console.error('Failed to fetch rates:', error)
-        }
+  const fetchRates = async () => {
+    try {
+      const response = await client.public.rates.$get()
+      const data = await response.json()
+      if ("error" in data) {
+        console.error('Error fetching rates:', data.error)
+        return
+      }
+      setRates(data)
+    } catch (error) {
+      console.error('Failed to fetch rates:', error)
     }
+  }
 
-    const getFlagIcon = (currencyCode: string) => {
-        const baseUrl = 'https://peter-exchange.pages.dev' // fe-rate-display URL
-        const flagMap: { [key: string]: string } = {
-            AUD: `${baseUrl}/AUD.png`,
-            CAD: `${baseUrl}/CAD.png`,
-            CHF: `${baseUrl}/CHF.png`,
-            CNY: `${baseUrl}/CNY.png`,
-            EUR: `${baseUrl}/EUR.png`,
-            GBP: `${baseUrl}/GBP.png`,
-            HKD: `${baseUrl}/HKD.png`,
-            JPY: `${baseUrl}/JPY.png`,
-            KRW: `${baseUrl}/KRW.png`,
-            MYR: `${baseUrl}/MYR.png`,
-            NZD: `${baseUrl}/NZD.png`,
-            SGD: `${baseUrl}/SGD.png`,
-            TWD: `${baseUrl}/TWD.png`,
-            USD: `${baseUrl}/USA.png`,
-            USD2: `${baseUrl}/USA.png`,
-            USD1: `${baseUrl}/USA.png`,
-        }
-        return flagMap[currencyCode] || `${baseUrl}/vite.svg`
+  const getFlagIcon = (currencyCode: string) => {
+    const baseUrl = 'https://peter-exchange.pages.dev'
+    const flagMap: { [key: string]: string } = {
+      AUD: `${baseUrl}/AUD.png`,
+      CAD: `${baseUrl}/CAD.png`,
+      CHF: `${baseUrl}/CHF.png`,
+      CNY: `${baseUrl}/CNY.png`,
+      EUR: `${baseUrl}/EUR.png`,
+      GBP: `${baseUrl}/GBP.png`,
+      HKD: `${baseUrl}/HKD.png`,
+      JPY: `${baseUrl}/JPY.png`,
+      KRW: `${baseUrl}/KRW.png`,
+      MYR: `${baseUrl}/MYR.png`,
+      NZD: `${baseUrl}/NZD.png`,
+      SGD: `${baseUrl}/SGD.png`,
+      TWD: `${baseUrl}/TWD.png`,
+      USD: `${baseUrl}/USA.png`,
+      USD2: `${baseUrl}/USA.png`,
+      USD1: `${baseUrl}/USA.png`,
     }
+    return flagMap[currencyCode] || `${baseUrl}/vite.svg`
+  }
 
-    const startEdit = (rate: Rate) => {
-        setEditingId(rate.id)
-        setEditValue(rate.Rate.toString())
-    }
+  const startEdit = (rate: Rate) => {
+    setEditingId(rate.id)
+    setEditValue(rate.Rate)
+  }
 
-    const cancelEdit = () => {
+  const cancelEdit = () => {
+    setEditingId(null)
+    setEditValue('')
+  }
+
+  const saveEdit = async (id: number) => {
+    setLoading(true)
+    try {
+      const response = await client.public.rates[':id'].$put({
+        param: { id: id.toString() },
+        json: { Rate: editValue }
+      })
+      if (response.ok) {
+        await fetchRates()
         setEditingId(null)
         setEditValue('')
+      } else {
+        const error = await response.json()
+        alert(`Failed to update rate: ${error}`)
+      }
+    } catch (error) {
+      console.error('Failed to update rate:', error)
+      alert('Failed to update rate')
     }
+    setLoading(false)
+  }
 
-    const saveEdit = async (id: number) => {
-        setLoading(true)
-        try {
-            const response = await client.public.rates[':id'].$put({
-                param: { id: id.toString() },
-                json: { Rate: editValue }
-            })
-            if (response.ok) {
-                await fetchRates() // Refresh the data
-                setEditingId(null)
-                setEditValue('')
-            } else {
-                const error = await response.json()
-                alert(`Failed to update rate: ${error}`)
-            }
-        } catch (error) {
-            console.error('Failed to update rate:', error)
-            alert('Failed to update rate')
-        }
-        setLoading(false)
-    }
-
-    return (
-        <div className='min-h-screen bg-gray-50 p-4'>
-            <div className="flex items-center justify-center mb-6">
-                <img src="512.png" alt="App Icon" className="w-12 h-12 rounded-full mr-3" />
-                <h1 className='text-2xl font-bold text-gray-800'>Peter Exchange Admin</h1>
-            </div>
-
-            <div className='space-y-4 max-w-md mx-auto'>
-                {rates.map((rate) => (
-                    <div key={rate.id} className='bg-white rounded-lg shadow-md p-4 border border-gray-200'>
-                        <div className='flex items-center justify-between mb-3'>
-                            <div className='flex items-center space-x-3'>
-                                <img
-                                    src={getFlagIcon(rate.Cur)}
-                                    alt={`${rate.Cur} flag`}
-                                    className='w-12 h-12 rounded-full object-cover border-2 border-gray-200'
-                                    onError={(e) => {
-                                        e.currentTarget.src = 'http://localhost:5173/vite.svg'
-                                    }}
-                                />
-                                <div>
-                                    <div className='font-mono font-bold text-lg text-gray-800'>{rate.Cur}</div>
-                                    <div className='text-sm text-gray-500'>{rate.Currency}</div>
-                                </div>
-                            </div>
-
-                            {editingId !== rate.id && (
-                                <button
-                                    onClick={() => startEdit(rate)}
-                                    className='p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors'
-                                    title='Edit Rate'
-                                >
-                                    <svg className='w-6 h-6' fill='currentColor' viewBox='0 0 20 20'>
-                                        <path d='M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z' />
-                                    </svg>
-                                </button>
-                            )}
-                        </div>
-
-                        <div className='border-t pt-3'>
-                            <div className='flex items-center justify-between'>
-                                <span className='text-sm font-medium text-gray-600'>Exchange Rate</span>
-
-                                {editingId === rate.id ? (
-                                    <div className='flex items-center space-x-2'>
-                                        <input
-                                            type='number'
-                                            step='0.0001'
-                                            value={editValue}
-                                            onChange={(e) => setEditValue(e.target.value)}
-                                            className='border-2 border-blue-300 rounded-lg px-3 py-2 w-28 text-right font-mono font-bold text-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') saveEdit(rate.id)
-                                                if (e.key === 'Escape') cancelEdit()
-                                            }}
-                                            autoFocus
-                                        />
-                                    </div>
-                                ) : (
-                                    <span className='font-mono font-bold text-xl text-gray-900'>
-                                        {rate.Rate}
-                                    </span>
-                                )}
-                            </div>
-
-                            {editingId === rate.id && (
-                                <div className='flex justify-end space-x-3 mt-4'>
-                                    <button
-                                        onClick={cancelEdit}
-                                        disabled={loading}
-                                        className='px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 disabled:opacity-50 transition-colors'
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        onClick={() => saveEdit(rate.id)}
-                                        disabled={loading}
-                                        className='px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors'
-                                    >
-                                        {loading ? 'Saving...' : 'Save'}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                ))}
-            </div>
+  return (
+    <div className="h-screen flex flex-col overflow-y-auto bg-gray-50">
+      <div className="container mx-auto px-2 py-2 flex-1 flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2">
+          <img src="512.png" alt="App Icon" className="w-8 h-8 rounded-full mr-2" />
+          <h1 className="text-lg font-bold text-gray-800">PETER EXCHANGE</h1>
+          <div className="ml-auto text-sm text-gray-500">
+            {new Date().toLocaleDateString('en-GB')}{" "}
+            {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+          </div>
         </div>
-    )
+
+        {/* Table */}
+        <div className="bg-white rounded-lg shadow border border-gray-200 flex-1 flex flex-col max-w-md mx-auto w-full">
+          {/* Header row */}
+          <div className="grid grid-cols-[auto_1fr_auto] gap-2 p-2 bg-gray-100 border-b border-gray-200 text-sm font-medium text-gray-700">
+            <div className="px-1">Flag</div>
+            <div className="px-1">Currency</div>
+            <div className="px-1 text-right">Rate</div>
+          </div>
+
+          <div className="divide-y divide-gray-100 overflow-y-auto flex-1">
+            {rates.map((rate) => (
+              <div key={rate.id} className="grid grid-cols-[auto_1fr_auto] gap-2 p-2 items-center hover:bg-gray-50 transition-colors">
+                {/* Flag */}
+                <div className="flex justify-center">
+                  <img
+                    src={getFlagIcon(rate.Cur)}
+                    alt={`${rate.Cur} flag`}
+                    className="w-6 h-6 rounded-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = '/vite.svg'
+                    }}
+                  />
+                </div>
+
+                {/* Currency */}
+                <div className="font-medium text-sm text-gray-800">{rate.Cur}</div>
+
+                {/* Rate + edit mode */}
+                <div className="flex items-center justify-end space-x-2">
+                  {editingId === rate.id ? (
+                    <>
+                      <input
+                        type="text"
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        className="border border-blue-300 rounded px-2 py-1 w-20 text-right font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') saveEdit(rate.id)
+                          if (e.key === 'Escape') cancelEdit()
+                        }}
+                        autoFocus
+                        placeholder="e.g. 30.00"
+                      />
+                      <button
+                        onClick={() => saveEdit(rate.id)}
+                        disabled={loading}
+                        className="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                      >
+                        {loading ? '...' : 'Save'}
+                      </button>
+                      <button
+                        onClick={cancelEdit}
+                        disabled={loading}
+                        className="px-2 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-mono text-sm">{rate.Rate}</span>
+                      <button
+                        onClick={() => startEdit(rate)}
+                        className="p-1 text-gray-400 hover:text-blue-600"
+                      >
+                        ✎
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>    
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }

@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "deploy:dev": "pnpm run build && wrangler deploy && wrangler secret bulk ./.dev.vars",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {

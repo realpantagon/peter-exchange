@@ -6,7 +6,7 @@ type Rate = {
   id: number
   Currency: string
   Cur: string
-  Rate: number
+  Rate: string
 }
 
 const client = hc<AppType>('/')
@@ -42,7 +42,7 @@ export default function SystemPage() {
 
   const handleCardClick = (rate: Rate) => {
     setSelectedRate(rate)
-    setCustomRate(rate.Rate.toString())
+    setCustomRate(rate.Rate)
     setShowTransactionForm(false)
     console.log('Selected rate:', rate)
   }
@@ -222,8 +222,7 @@ export default function SystemPage() {
                     Exchange Rate ({selectedRate.Cur} to THB)
                   </label>
                   <input
-                    type="number"
-                    step="0.0001"
+                    type="text"
                     value={customRate}
                     onChange={(e) => setCustomRate(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

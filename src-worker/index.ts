@@ -40,7 +40,7 @@ const app = new Hono<{ Bindings: CloudflareBindings }>()
             id: z.coerce.number()
         })),
         zValidator("json", z.object({
-            Rate: z.coerce.number().positive()
+            Rate: z.coerce.string()
         })),
         async (c) => {
 
