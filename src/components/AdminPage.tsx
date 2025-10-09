@@ -114,7 +114,7 @@ export default function AdminPage() {
 
           <div className="divide-y divide-gray-100 overflow-y-auto flex-1">
             {rates.map((rate) => (
-              <div key={rate.id} className="grid grid-cols-[auto_1fr_auto] gap-2 p-2 items-center hover:bg-gray-50 transition-colors">
+              <div key={rate.id} className="grid grid-cols-[auto_1fr_auto] gap-2 px-2 py-1 items-center hover:bg-gray-50 transition-colors">
                 {/* Flag */}
                 <div className="flex justify-center">
                   <img
