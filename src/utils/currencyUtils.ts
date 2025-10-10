@@ -43,5 +43,7 @@ export const getFlagIcon = (currencyCode: string): string => {
 export const calculateExchangeTotal = (rate: string, amount: string): string => {
   const rateValue = parseFloat(rate) || 0
   const amountValue = parseFloat(amount) || 0
-  return (rateValue * amountValue).toFixed(2)
+  const total = rateValue * amountValue
+  // Round down the total to integer
+  return Math.floor(total).toString()
 }

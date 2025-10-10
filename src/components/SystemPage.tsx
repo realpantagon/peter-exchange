@@ -132,14 +132,16 @@ export default function SystemPage() {
   }
 
   const handleSaveTransaction = async () => {
-    const total = calculateTotal()
+    // Convert amount to negative if selling, then calculate total from that
+    const finalAmount = transactionType === 'Selling' ? `-${amount}` : amount
+    const total = calculateExchangeTotal(customRate, finalAmount)
     
     try {
       const transactionData = {
         Currency: selectedRate?.Currency || editingTransaction?.Currency || '',
         Cur: selectedRate?.Cur || editingTransaction?.Cur || '',
         Rate: customRate,
-        Amount: amount,
+        Amount: finalAmount,
         Total_TH: total,
         Branch: branchId || undefined,
         Transaction_Type: transactionType as 'Buying' | 'Selling'

@@ -97,9 +97,15 @@ export default function TransactionForm({
         <input
           ref={amountInputRef}
           type="number"
-          step="0.01"
+          step="1"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value
+            // Only allow integers (no decimals)
+            if (value === '' || /^\d+$/.test(value)) {
+              setAmount(value)
+            }
+          }}
           onWheel={handleWheel}
           className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
             amount.trim() === '' || parseFloat(amount) <= 0 

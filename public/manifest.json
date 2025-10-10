@@ -27,19 +27,7 @@
       "name": "Admin Panel",
       "short_name": "Admin",
       "description": "Access the admin panel to manage rates",
-      "url": "/admin",
-      "icons": [
-        {
-          "src": "/favicon_io/android-chrome-192x192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "System",
-      "short_name": "System",
-      "description": "Access the system page",
-      "url": "/system",
+      "url": "/admin2025",
       "icons": [
         {
           "src": "/favicon_io/android-chrome-192x192.png",

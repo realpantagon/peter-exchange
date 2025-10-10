@@ -104,6 +104,11 @@ export default function TransactionTable({
         })
     }
 
+    const formatRate = (rate: string) => {
+        // Display rate with full precision (no decimal limit)
+        return parseFloat(rate).toString()
+    }
+
     const SortIcon = ({ field }: { field: keyof Transaction }) => {
         if (sortField !== field) {
             return (
@@ -399,13 +404,21 @@ export default function TransactionTable({
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-900 font-semibold">
+                                    <td className={`px-6 py-0 whitespace-nowrap text-sm font-semibold rounded ${
+                                        transaction.Transaction_Type === 'Selling' 
+                                            ? 'text-orange-700 bg-orange-50' 
+                                            : 'text-green-700 bg-green-50'
+                                    }`}>
                                         {formatCurrency(transaction.Amount)}
                                     </td>
                                     <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                                        {formatCurrency(transaction.Rate)}
+                                        {formatRate(transaction.Rate)}
                                     </td>
-                                    <td className="px-6 py-0 whitespace-nowrap text-sm font-bold text-green-700 bg-green-50 rounded">
+                                    <td className={`px-6 py-0 whitespace-nowrap text-sm font-bold rounded ${
+                                        transaction.Transaction_Type === 'Selling' 
+                                            ? 'text-orange-700 bg-orange-50' 
+                                            : 'text-green-700 bg-green-50'
+                                    }`}>
                                         ฿{formatCurrency(transaction.Total_TH)}
                                     </td>
                                     {!branchId && (
@@ -431,18 +444,34 @@ export default function TransactionTable({
             {/* Footer */}
             {sortedTransactions.length > 0 && (
                 <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-white border-t-2 border-gray-200">
-                    <div className="flex items-center justify-between">
-                        {/* Summary Stats */}
-                        <div className="flex items-center gap-6 text-sm font-medium text-gray-700">
-                            <div>
-                                Showing <span className="font-bold text-blue-600">{startIndex + 1}</span> to <span className="font-bold text-blue-600">{Math.min(endIndex, sortedTransactions.length)}</span> of <span className="font-bold text-blue-600">{sortedTransactions.length}</span> transactions
+                    {/* Summary Statistics - New Section */}
+                    <div className={`mb-4 grid ${searchTerm || currencyFilter ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                        {(searchTerm || currencyFilter) && (
+                            <div className="bg-blue-50 px-4 py-3 rounded-lg border-2 border-blue-200">
+                                <div className="text-xs text-blue-600 font-semibold uppercase mb-1">Total Amount (Filtered)</div>
+                                <div className="text-2xl font-bold text-blue-700">
+                                    {sortedTransactions.reduce((sum, t) => sum + parseFloat(t.Amount), 0).toLocaleString('en-US', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}
+                                </div>
                             </div>
-                            <div className="bg-green-50 px-3 py-1 rounded-lg border border-green-200">
-                                Total Amount: <span className="font-bold text-green-700">฿{sortedTransactions.reduce((sum, t) => sum + parseFloat(t.Total_TH), 0).toLocaleString('en-US', {
+                        )}
+                        <div className="bg-green-50 px-4 py-3 rounded-lg border-2 border-green-200">
+                            <div className="text-xs text-green-600 font-semibold uppercase mb-1">Net Total (THB)</div>
+                            <div className="text-2xl font-bold text-green-700">
+                                ฿{sortedTransactions.reduce((sum, t) => sum + parseFloat(t.Total_TH), 0).toLocaleString('en-US', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
-                                })}</span>
+                                })}
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        {/* Pagination Info */}
+                        <div className="text-sm font-medium text-gray-700">
+                            Showing <span className="font-bold text-blue-600">{startIndex + 1}</span> to <span className="font-bold text-blue-600">{Math.min(endIndex, sortedTransactions.length)}</span> of <span className="font-bold text-blue-600">{sortedTransactions.length}</span> transactions
                         </div>
 
                         {/* Pagination Controls */}
