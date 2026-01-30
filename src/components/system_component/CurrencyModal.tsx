@@ -13,6 +13,12 @@ interface CurrencyModalProps {
   setAmount: (amount: string) => void
   transactionType: string
   setTransactionType: (type: string) => void
+  passportNo: string
+  setPassportNo: (value: string) => void
+  nationality: string
+  setNationality: (value: string) => void
+  customerName: string
+  setCustomerName: (value: string) => void
   calculateTotal: () => string
   onSaveTransaction: () => void
   onCancelTransaction: () => void
@@ -30,6 +36,12 @@ export default function CurrencyModal({
   setAmount,
   transactionType,
   setTransactionType,
+  passportNo,
+  setPassportNo,
+  nationality,
+  setNationality,
+  customerName,
+  setCustomerName,
   calculateTotal,
   onSaveTransaction,
   onCancelTransaction,
@@ -98,6 +110,12 @@ export default function CurrencyModal({
             setAmount={setAmount}
             transactionType={transactionType}
             setTransactionType={setTransactionType}
+            passportNo={passportNo}
+            setPassportNo={setPassportNo}
+            nationality={nationality}
+            setNationality={setNationality}
+            customerName={customerName}
+            setCustomerName={setCustomerName}
             calculateTotal={calculateTotal}
             onSave={onSaveTransaction}
             onCancel={onCancelTransaction}

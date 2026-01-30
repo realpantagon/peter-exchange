@@ -6,23 +6,29 @@ import z from 'zod';
 
 // Transaction validation schemas
 const createTransactionSchema = z.object({
-  Currency: z.string(),
-  Cur: z.string(),
-  Rate: z.string(),
-  Amount: z.string(),
-  Total_TH: z.string(),
-  Branch: z.string().optional(),
-  Transaction_Type: z.enum(['Buying', 'Selling'])
+    Currency: z.string(),
+    Cur: z.string(),
+    Rate: z.string(),
+    Amount: z.string(),
+    Total_TH: z.string(),
+    Branch: z.string().optional(),
+    Transaction_Type: z.enum(['Buying', 'Selling']),
+    Customer_Passport_no: z.string().optional(),
+    Customer_Nationality: z.string().optional(),
+    Customer_Name: z.string().optional()
 });
 
 const updateTransactionSchema = z.object({
-  Currency: z.string().optional(),
-  Cur: z.string().optional(),
-  Rate: z.string().optional(),
-  Amount: z.string().optional(),
-  Total_TH: z.string().optional(),
-  Branch: z.string().optional(),
-  Transaction_Type: z.enum(['Buying', 'Selling']).optional()
+    Currency: z.string().optional(),
+    Cur: z.string().optional(),
+    Rate: z.string().optional(),
+    Amount: z.string().optional(),
+    Total_TH: z.string().optional(),
+    Branch: z.string().optional(),
+    Transaction_Type: z.enum(['Buying', 'Selling']).optional(),
+    Customer_Passport_no: z.string().optional(),
+    Customer_Nationality: z.string().optional(),
+    Customer_Name: z.string().optional()
 });
 
 function getSupabase(c: any) {
@@ -93,7 +99,7 @@ const app = new Hono<{ Bindings: CloudflareBindings }>()
         })
 
     // Transaction CRUD endpoints
-    
+
     // GET all transactions
     .get('/public/transactions', async (c) => {
         const client = getSupabase(c)
@@ -137,7 +143,7 @@ const app = new Hono<{ Bindings: CloudflareBindings }>()
         zValidator("json", createTransactionSchema),
         async (c) => {
             const client = getSupabase(c)
-            
+
             try {
                 const transactionData = await c.req.valid("json")
 

@@ -14,6 +14,10 @@ interface TransactionTableProps {
     dateTo: string
     setDateTo: (date: string) => void
     onEditTransaction: (transaction: Transaction) => void
+    selectedTransactionIds: number[]
+    onToggleSelect: (id: number) => void
+    onPrintSingle: (transaction: Transaction) => void
+    onSelectAll: (ids: number[]) => void
 }
 
 export default function TransactionTable({
@@ -27,7 +31,11 @@ export default function TransactionTable({
     setDateFrom,
     dateTo,
     setDateTo,
-    onEditTransaction
+    onEditTransaction,
+    selectedTransactionIds = [],
+    onToggleSelect,
+    onPrintSingle,
+    onSelectAll
 }: TransactionTableProps) {
     const [sortField, setSortField] = useState<keyof Transaction>('created_at')
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
@@ -302,6 +310,18 @@ export default function TransactionTable({
                                         <SortIcon field="id" />
                                     </div>
                                 </th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b-2 border-gray-200 w-10">
+                                    <span className="sr-only">Select</span>
+                                    <input
+                                        type="checkbox"
+                                        checked={paginatedTransactions.length > 0 && paginatedTransactions.every(t => t.id && selectedTransactionIds.includes(t.id))}
+                                        onChange={() => {
+                                            const idsToSelect = paginatedTransactions.map(t => t.id).filter((id): id is number => id !== undefined)
+                                            onSelectAll(idsToSelect)
+                                        }}
+                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                                    />
+                                </th>
                                 <th
                                     className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors duration-150 border-b-2 border-gray-200"
                                     onClick={() => handleSort('created_at')}
@@ -356,16 +376,27 @@ export default function TransactionTable({
                                         <SortIcon field="Total_TH" />
                                     </div>
                                 </th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b-2 border-gray-200">
+                                    Passport No.
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b-2 border-gray-200">
+                                    Nationality
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b-2 border-gray-200">
+                                    Name
+                                </th>
                                 {!branchId && (
-                                    <th
-                                        className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition-colors duration-150 border-b-2 border-gray-200"
-                                        onClick={() => handleSort('Branch')}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            Branch
-                                            <SortIcon field="Branch" />
-                                        </div>
-                                    </th>
+                                    <>
+                                        <th
+                                            className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider cursor:pointer hover:bg-gray-200 transition-colors duration-150 border-b-2 border-gray-200"
+                                            onClick={() => handleSort('Branch')}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                Branch
+                                                <SortIcon field="Branch" />
+                                            </div>
+                                        </th>
+                                    </>
                                 )}
                                 <th className="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider border-b-2 border-gray-200">
                                     Actions
@@ -377,6 +408,18 @@ export default function TransactionTable({
                                 <tr key={transaction.id || index} className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-150 cursor-pointer">
                                     <td className="px-6 py-0 whitespace-nowrap text-sm font-bold text-gray-900">
                                         #{transaction.id}
+                                    </td>
+                                    <td className="px-6 py-0 whitespace-nowrap">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedTransactionIds.includes(transaction.id!)}
+                                            onChange={(e) => {
+                                                e.stopPropagation()
+                                                if (transaction.id) onToggleSelect(transaction.id)
+                                            }}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                                        />
                                     </td>
                                     <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-600 font-medium">
                                         {formatDate(transaction.created_at)}
@@ -404,22 +447,29 @@ export default function TransactionTable({
                                             </span>
                                         </div>
                                     </td>
-                                    <td className={`px-6 py-0 whitespace-nowrap text-sm font-semibold rounded ${
-                                        transaction.Transaction_Type === 'Selling' 
-                                            ? 'text-orange-700 bg-orange-50' 
-                                            : 'text-green-700 bg-green-50'
-                                    }`}>
+                                    <td className={`px-6 py-0 whitespace-nowrap text-sm font-semibold rounded ${transaction.Transaction_Type === 'Selling'
+                                        ? 'text-orange-700 bg-orange-50'
+                                        : 'text-green-700 bg-green-50'
+                                        }`}>
                                         {formatCurrency(transaction.Amount)}
                                     </td>
                                     <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-900 font-semibold">
                                         {formatRate(transaction.Rate)}
                                     </td>
-                                    <td className={`px-6 py-0 whitespace-nowrap text-sm font-bold rounded ${
-                                        transaction.Transaction_Type === 'Selling' 
-                                            ? 'text-orange-700 bg-orange-50' 
-                                            : 'text-green-700 bg-green-50'
-                                    }`}>
+                                    <td className={`px-6 py-0 whitespace-nowrap text-sm font-bold rounded ${transaction.Transaction_Type === 'Selling'
+                                        ? 'text-orange-700 bg-orange-50'
+                                        : 'text-green-700 bg-green-50'
+                                        }`}>
                                         ฿{formatCurrency(transaction.Total_TH)}
+                                    </td>
+                                    <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-600">
+                                        {transaction.Customer_Passport_no || transaction.Passport_No || '-'}
+                                    </td>
+                                    <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-600">
+                                        {transaction.Customer_Nationality || '-'}
+                                    </td>
+                                    <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-600">
+                                        {transaction.Customer_Name || '-'}
                                     </td>
                                     {!branchId && (
                                         <td className="px-6 py-0 whitespace-nowrap text-sm text-gray-600 font-medium">
@@ -428,10 +478,28 @@ export default function TransactionTable({
                                     )}
                                     <td className="px-6 py-3 whitespace-nowrap text-sm">
                                         <button
-                                            onClick={() => onEditTransaction(transaction)}
-                                            className="text-blue-600 hover:text-blue-800 font-bold hover:underline transition-all duration-150 cursor-pointer hover:bg-blue-50 px-3 py-1 rounded-md"
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                onEditTransaction(transaction)
+                                            }}
+                                            className="text-blue-600 hover:text-blue-800 transition-all duration-150 cursor-pointer hover:bg-blue-50 p-1.5 rounded-full ring-1 ring-blue-200"
+                                            title="Edit Transaction"
                                         >
-                                            Edit
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                onPrintSingle(transaction)
+                                            }}
+                                            className="ml-8 text-purple-600 hover:text-purple-800 transition-all duration-150 cursor-pointer hover:bg-purple-100 p-1.5 rounded-full ring-1 ring-purple-200"
+                                            title="Print Receipt"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2-4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                            </svg>
                                         </button>
                                     </td>
                                 </tr>

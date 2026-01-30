@@ -15,6 +15,10 @@ export type Transaction = {
   Total_TH: string
   Branch?: string
   Transaction_Type?: string
+  Passport_No?: string // Keeping for backward compatibility if needed, or remove? Better to strictly match DB.
+  Customer_Passport_no?: string
+  Customer_Nationality?: string
+  Customer_Name?: string
 }
 
 export const getFlagIcon = (currencyCode: string): string => {
