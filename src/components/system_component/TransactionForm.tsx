@@ -66,7 +66,7 @@ export default function TransactionForm({
     }
   }
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Transaction Type Dropdown */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -75,7 +75,7 @@ export default function TransactionForm({
         <select
           value={transactionType}
           onChange={(e) => setTransactionType(e.target.value)}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${transactionType === '' ? 'border-red-300 bg-red-50 text-gray-500' : 'border-gray-300 bg-white text-gray-900'
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${transactionType === '' ? 'border-red-300 bg-red-50 text-gray-500' : 'border-gray-300 bg-white text-gray-900'
             }`}
         >
           <option value="" disabled>Select Type --</option>
@@ -92,7 +92,7 @@ export default function TransactionForm({
           type="text"
           value={passportNo}
           onChange={(e) => setPassportNo(e.target.value)}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${passportNo.trim() === '' ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${passportNo.trim() === '' ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}
           placeholder="Enter passport number"
           required
         />
@@ -109,7 +109,7 @@ export default function TransactionForm({
           type="text"
           value={nationality}
           onChange={(e) => setNationality(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
           placeholder="Nationality"
           list={nationality.length > 0 ? "nationality-list" : undefined}
         />
@@ -128,7 +128,7 @@ export default function TransactionForm({
           type="text"
           value={customerName}
           onChange={(e) => setCustomerName(e.target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white"
           placeholder="Customer Name"
         />
       </div>
@@ -143,7 +143,7 @@ export default function TransactionForm({
           value={customRate}
           onChange={(e) => setCustomRate(e.target.value)}
           onWheel={handleWheel}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${customRate.trim() === '' || parseFloat(customRate) <= 0
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${customRate.trim() === '' || parseFloat(customRate) <= 0
             ? 'border-red-300 bg-red-50'
             : 'border-gray-300'
             }`}
@@ -172,7 +172,7 @@ export default function TransactionForm({
             }
           }}
           onWheel={handleWheel}
-          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${amount.trim() === '' || parseFloat(amount) <= 0
+          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${amount.trim() === '' || parseFloat(amount) <= 0
             ? 'border-red-300 bg-red-50'
             : 'border-gray-300'
             }`}
@@ -184,7 +184,7 @@ export default function TransactionForm({
         )}
       </div>
 
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200">
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-xl border border-green-200">
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-700 font-medium">Total (THB):</span>
           <span className="font-bold text-2xl text-green-600">฿{calculateTotal()}</span>
@@ -197,14 +197,14 @@ export default function TransactionForm({
       <div className="flex gap-4 pt-2">
         <button
           onClick={onCancel}
-          className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+          className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
           disabled={!isValidForm}
-          className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${isValidForm
+          className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${isValidForm
             ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl'
             : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
