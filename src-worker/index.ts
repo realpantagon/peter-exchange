@@ -219,6 +219,19 @@ const app = new Hono<{ Bindings: CloudflareBindings }>()
             return c.json({ message: 'Transaction deleted successfully', data: data[0] })
         })
 
+    // SPA fallback: Try to serve the asset, fallback to index.html if not found (and not an API call)
+    .get('/*', async (c) => {
+        const asset = await c.env.ASSETS.fetch(c.req.raw)
+        
+        if (asset.status === 404 && !c.req.path.startsWith('/public/')) {
+            const url = new URL(c.req.url)
+            url.pathname = '/index.html'
+            return c.env.ASSETS.fetch(new Request(url, c.req.raw))
+        }
+        
+        return asset
+    })
+
 export default app;
 
 export type AppType = typeof app;
