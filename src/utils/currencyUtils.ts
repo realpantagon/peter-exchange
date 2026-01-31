@@ -22,7 +22,7 @@ export type Transaction = {
 }
 
 export const getFlagIcon = (currencyCode: string): string => {
-  const baseUrl = 'https://peter-exchange.pages.dev'
+  const baseUrl = ''
   const flagMap: { [key: string]: string } = {
     AUD: `${baseUrl}/AUD.png`,
     CAD: `${baseUrl}/CAD.png`,

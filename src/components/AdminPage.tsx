@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { hc } from 'hono/client'
 import type { AppType } from '../../src-worker/index'
+import { getFlagIcon } from '../utils/currencyUtils'
 
 type Rate = {
   id: number
@@ -35,28 +36,6 @@ export default function AdminPage() {
     }
   }
 
-  const getFlagIcon = (currencyCode: string) => {
-    const baseUrl = 'https://peter-exchange.pages.dev'
-    const flagMap: { [key: string]: string } = {
-      AUD: `${baseUrl}/AUD.png`,
-      CAD: `${baseUrl}/CAD.png`,
-      CHF: `${baseUrl}/CHF.png`,
-      CNY: `${baseUrl}/CNY.png`,
-      EUR: `${baseUrl}/EUR.png`,
-      GBP: `${baseUrl}/GBP.png`,
-      HKD: `${baseUrl}/HKD.png`,
-      JPY: `${baseUrl}/JPY.png`,
-      KRW: `${baseUrl}/KRW.png`,
-      MYR: `${baseUrl}/MYR.png`,
-      NZD: `${baseUrl}/NZD.png`,
-      SGD: `${baseUrl}/SGD.png`,
-      TWD: `${baseUrl}/TWD.png`,
-      USD: `${baseUrl}/USA.png`,
-      USD2: `${baseUrl}/USA.png`,
-      USD1: `${baseUrl}/USA.png`,
-    }
-    return flagMap[currencyCode] || `${baseUrl}/vite.svg`
-  }
 
   const startEdit = (rate: Rate) => {
     setEditingId(rate.id)
@@ -130,7 +109,7 @@ export default function AdminPage() {
                       />
                       <span className="font-semibold text-base text-gray-800">{rate.Cur}</span>
                     </div>
-                    
+
                     {/* Input field */}
                     <div>
                       <label className="block text-xs text-gray-600 mb-1">Exchange Rate</label>
@@ -150,7 +129,7 @@ export default function AdminPage() {
                         step="0.01"
                       />
                     </div>
-                    
+
                     {/* Action buttons */}
                     <div className="flex gap-2">
                       <button
@@ -199,7 +178,7 @@ export default function AdminPage() {
                     </div>
                   </>
                 )}
-              </div>    
+              </div>
             ))}
           </div>
         </div>

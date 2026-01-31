@@ -358,7 +358,7 @@ export default function SuperAdminPage() {
                                                     alt={`${curr.currency} flag`}
                                                     className="w-6 h-6 md:w-8 md:h-8 rounded-full border border-gray-100 object-cover"
                                                     onError={(e) => {
-                                                        e.currentTarget.src = 'https://peter-exchange.pages.dev/vite.svg'
+                                                        e.currentTarget.src = '/vite.svg'
                                                     }}
                                                 />
                                             </td>
@@ -467,7 +467,7 @@ export default function SuperAdminPage() {
                                                             alt={`${curr.currency} flag`}
                                                             className="w-6 h-6 md:w-8 md:h-8 rounded-full border border-gray-100 object-cover"
                                                             onError={(e) => {
-                                                                e.currentTarget.src = 'https://peter-exchange.pages.dev/vite.svg'
+                                                                e.currentTarget.src = '/vite.svg'
                                                             }}
                                                         />
                                                     </td>

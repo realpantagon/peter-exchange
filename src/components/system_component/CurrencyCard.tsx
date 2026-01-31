@@ -11,11 +11,10 @@ export default function CurrencyCard({ rate, isSelected, onClick }: CurrencyCard
   return (
     <div
       onClick={() => onClick(rate)}
-      className={`bg-white rounded shadow-sm p-2 cursor-pointer border transition-all hover:shadow ${
-        isSelected 
-          ? 'border-blue-500 bg-blue-50 shadow ring-1 ring-blue-200' 
+      className={`bg-white rounded shadow-sm p-2 cursor-pointer border transition-all hover:shadow ${isSelected
+          ? 'border-blue-500 bg-blue-50 shadow ring-1 ring-blue-200'
           : 'border-gray-200 hover:border-blue-300'
-      }`}
+        }`}
     >
       <div className="flex items-center gap-3">
         <img
@@ -23,7 +22,7 @@ export default function CurrencyCard({ rate, isSelected, onClick }: CurrencyCard
           alt={`${rate.Cur} flag`}
           className="w-6 h-6 rounded-full border border-gray-100 object-cover flex-shrink-0"
           onError={(e) => {
-            e.currentTarget.src = 'https://peter-exchange.pages.dev/vite.svg'
+            e.currentTarget.src = '/vite.svg'
           }}
         />
         <div className="flex-1 min-w-0">

@@ -241,7 +241,7 @@ export default function TransactionTable({
                                         alt={`${currencyFilter} flag`}
                                         className="absolute right-8 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full object-cover pointer-events-none"
                                         onError={(e) => {
-                                            e.currentTarget.src = 'https://peter-exchange.pages.dev/vite.svg'
+                                            e.currentTarget.src = '/vite.svg'
                                         }}
                                     />
                                 )}
@@ -439,7 +439,7 @@ export default function TransactionTable({
                                                 alt={`${transaction.Cur} flag`}
                                                 className="w-5 h-5 rounded-full object-cover"
                                                 onError={(e) => {
-                                                    e.currentTarget.src = 'https://peter-exchange.pages.dev/vite.svg'
+                                                    e.currentTarget.src = '/vite.svg'
                                                 }}
                                             />
                                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
