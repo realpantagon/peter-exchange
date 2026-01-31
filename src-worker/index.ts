@@ -219,18 +219,18 @@ const app = new Hono<{ Bindings: CloudflareBindings }>()
             return c.json({ message: 'Transaction deleted successfully', data: data[0] })
         })
 
-    // SPA fallback: Try to serve the asset, fallback to index.html if not found (and not an API call)
+    // SPA routing logic
     .get('/*', async (c) => {
-        let response = await c.env.ASSETS.fetch(c.req.raw)
-        
-        if (response.status === 404 && !c.req.path.startsWith('/public/')) {
-            const url = new URL(c.req.url)
-            url.pathname = '/'
-            // Create a fresh request for the fallback to avoid issues with modifying the original
-            response = await c.env.ASSETS.fetch(new Request(url))
+        const url = new URL(c.req.url)
+        const isFile = url.pathname.includes('.')
+
+        if (isFile) {
+            return c.env.ASSETS.fetch(c.req.raw)
         }
-        
-        return response
+
+        // For non-file routes (SPA navigation), serve index.html
+        url.pathname = '/index.html'
+        return c.env.ASSETS.fetch(new Request(url, c.req.raw))
     })
 
 export default app;
