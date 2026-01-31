@@ -41,7 +41,10 @@ export default function Receipt({ transactions }: ReceiptProps) {
 
                 <div className="mb-2">
                     <div className="flex justify-between text-[8px] border-b border-black border-dashed pb-1 mb-2 font-bold">
-                        <div>Passport: {transactions[0]?.Customer_Passport_no || transactions[0]?.Passport_No || '-'}</div>
+                        <div>
+                            <div>Passport: {transactions[0]?.Customer_Passport_no || transactions[0]?.Passport_No || '-'}</div>
+                            <div>Name: {transactions[0]?.Customer_Name || 'Customer'}</div>
+                        </div>
                         <div>Nationality: {transactions[0]?.Customer_Nationality || '-'}</div>
                     </div>
                     {/* Header Row */}
