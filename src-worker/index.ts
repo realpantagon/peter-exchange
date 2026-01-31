@@ -221,15 +221,16 @@ const app = new Hono<{ Bindings: CloudflareBindings }>()
 
     // SPA fallback: Try to serve the asset, fallback to index.html if not found (and not an API call)
     .get('/*', async (c) => {
-        const asset = await c.env.ASSETS.fetch(c.req.raw)
+        let response = await c.env.ASSETS.fetch(c.req.raw)
         
-        if (asset.status === 404 && !c.req.path.startsWith('/public/')) {
+        if (response.status === 404 && !c.req.path.startsWith('/public/')) {
             const url = new URL(c.req.url)
-            url.pathname = '/index.html'
-            return c.env.ASSETS.fetch(new Request(url, c.req.raw))
+            url.pathname = '/'
+            // Create a fresh request for the fallback to avoid issues with modifying the original
+            response = await c.env.ASSETS.fetch(new Request(url))
         }
         
-        return asset
+        return response
     })
 
 export default app;
